@@ -8,6 +8,7 @@
 #include <SD.h>
 #include <Preferences.h>
 #include <WiFi.h>
+#include <esp_wifi.h>          // ← ADICIONAR ESTA LINHA
 #include <BLEDevice.h>
 #include <BLEUtils.h>
 #include <BLEScan.h>
