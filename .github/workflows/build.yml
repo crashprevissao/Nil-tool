@@ -33,56 +33,24 @@ jobs:
     - name: Compilar firmware
       run: pio run
     
-    - name: Listar arquivos gerados
-      run: ls -la .pio/build/esp32dev/
-    
-    - name: Upload firmware.bin
-      uses: actions/upload-artifact@v4
-      with:
-        name: firmware
-        path: .pio/build/esp32dev/firmware.bin
-    
-    - name: Upload bootloader.bin
-      uses: actions/upload-artifact@v4
-      with:
-        name: bootloader
-        path: .pio/build/esp32dev/bootloader.bin
-    
-    - name: Upload partitions.bin
-      uses: actions/upload-artifact@v4
-      with:
-        name: partitions
-        path: .pio/build/esp32dev/partitions.bin
-    
-    - name: Upload boot_app0.bin
-      uses: actions/upload-artifact@v4
-      with:
-        name: boot_app0
-        path: ~/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/bin/boot_app0.bin
-    
-    - name: Compactar todos os bins
+    - name: Organizar arquivos de gravação
       run: |
-        mkdir -p release
-        cp .pio/build/esp32dev/firmware.bin release/
-        cp .pio/build/esp32dev/bootloader.bin release/
-        cp .pio/build/esp32dev/partitions.bin release/
-        cp ~/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/bin/boot_app0.bin release/ || echo "boot_app0 não encontrado"
-        cd release && zip ../esp32-firmware.zip *.bin
+        mkdir -p esp32_factory_files
+        
+        # Copia os 3 arquivos gerados pela compilação
+        cp .pio/build/esp32dev/firmware.bin esp32_factory_files/
+        cp .pio/build/esp32dev/bootloader.bin esp32_factory_files/
+        cp .pio/build/esp32dev/partitions.bin esp32_factory_files/
+        
+        # Procura e copia o boot_app0.bin de forma automática
+        find ~/.platformio/packages/framework-arduinoespressif32/ -name "boot_app0.bin" -exec cp {} esp32_factory_files/ \;
+        
+        # Mostra no log os arquivos reunidos para garantia
+        ls -la esp32_factory_files/
     
-    - name: Upload pacote completo
+    - name: Upload dos 4 arquivos de gravação
       uses: actions/upload-artifact@v4
       with:
-        name: esp32-firmware-completo
-        path: esp32-firmware.zip
-    
-    - name: Release (se tag)
-      if: startsWith(github.ref, 'refs/tags/')
-      uses: softprops/action-gh-release@v1
-      with:
-        files: |
-          .pio/build/esp32dev/firmware.bin
-          .pio/build/esp32dev/bootloader.bin
-          .pio/build/esp32dev/partitions.bin
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        name: esp32-binarios-gravacao
+        path: esp32_factory_files/
         
