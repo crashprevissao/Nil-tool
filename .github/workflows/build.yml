@@ -1,4 +1,4 @@
-Name: Build ESP32 Firmware
+name: Build ESP32 Firmware
 
 on:
   push:
