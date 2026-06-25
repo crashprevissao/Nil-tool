@@ -31,7 +31,7 @@ jobs:
         pio upgrade
     
     - name: Compilar firmware
-      run: pio run -v
+      run: pio run
     
     - name: Listar arquivos gerados
       run: ls -la .pio/build/esp32dev/
