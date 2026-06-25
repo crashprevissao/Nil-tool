@@ -1,4 +1,4 @@
-name: Build ESP32 Firmware
+Name: Build ESP32 Firmware
 
 on:
   push:
@@ -31,7 +31,7 @@ jobs:
         pio upgrade
     
     - name: Compilar firmware
-      run: pio run
+      run: pio run -v
     
     - name: Listar arquivos gerados
       run: ls -la .pio/build/esp32dev/
@@ -85,3 +85,4 @@ jobs:
           .pio/build/esp32dev/partitions.bin
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
